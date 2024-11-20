@@ -10,6 +10,8 @@ for i in range(1,17):
     response = response.content
 
     soup = BeautifulSoup(response, 'html.parser')
+    
+    data =[]
 
     obituaries = soup.find_all('h2', class_='pld-post-title')
 
@@ -18,8 +20,8 @@ for i in range(1,17):
         
         print(f'obituary : {info}')
         
-        # Create DataFrame
-        df = pd.DataFrame(info)
+        data.append([info])
 
 # Save DataFrame to CSV
-df.to_csv('output.csv', index=False)
+df = pd.DataFrame(data, columns=['Information'])
+df.to_csv('website1_scraped_data.csv', index=False)
