@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 import time
+import pandas as pd
 
 url = "https://www.sundayobserver.lk/category/obituaries/"
 
@@ -8,6 +9,8 @@ with sync_playwright() as p:
     browser = p.chromium.launch(channel="msedge", headless=True)
     page = browser.new_page()
     page.goto(url)
+    
+    data =[]
 
     # Loop to click "load more" button until no more content can be loaded
     while True:
@@ -33,6 +36,8 @@ with sync_playwright() as p:
                     Published Date: {date}
                     Obituary Note: {note}
                     ''')
+                    
+                    data.append([date,note])
 
             else:
                 break  # Exit the loop if no "load more" button is found
@@ -42,4 +47,8 @@ with sync_playwright() as p:
 
 
     browser.close()
+    
+# Save DataFrame to CSV
+df = pd.DataFrame(data, columns=['Date', 'Obituary Note'])
+df.to_csv('website3_scraped_data.csv', index=False)
 
